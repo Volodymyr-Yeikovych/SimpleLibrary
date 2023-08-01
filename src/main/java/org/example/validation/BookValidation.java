@@ -1,5 +1,7 @@
-package org.example;
+package org.example.validation;
 
+import org.example.model.Book;
+import org.example.model.Person;
 import org.example.exceptions.*;
 
 import java.util.Optional;

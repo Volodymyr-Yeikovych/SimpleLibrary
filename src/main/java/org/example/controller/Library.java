@@ -1,4 +1,9 @@
-package org.example;
+package org.example.controller;
+
+import org.example.dao.BookRepository;
+import org.example.model.Book;
+import org.example.model.Person;
+import org.example.validation.BookValidation;
 
 import java.util.*;
 

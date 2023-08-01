@@ -1,5 +1,8 @@
-package org.example;
+package org.example.dao;
 
+
+import org.example.model.Book;
+import org.example.model.Person;
 
 import java.util.*;
 

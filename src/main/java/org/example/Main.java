@@ -1,5 +1,9 @@
 package org.example;
 
+import org.example.controller.Library;
+import org.example.model.Book;
+import org.example.model.Person;
+
 public class Main {
     public static void main(String[] args) {
         Library lib = new Library();
