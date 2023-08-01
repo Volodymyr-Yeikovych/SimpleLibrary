@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.controller.Library;
+import org.example.service.Library;
 import org.example.model.Book;
 import org.example.model.Person;
 

@@ -6,7 +6,7 @@ import org.example.exceptions.*;
 
 import java.util.Optional;
 
-public class BookValidation {
+public class BookValidator {
     public void checkForAvailability(Optional<Book> book, String title) {
         if (book.isEmpty()) {
             throw new BookIsNotFoundException("Book {" + title + "} is not available.");
@@ -37,9 +37,4 @@ public class BookValidation {
         }
     }
 
-    public void checkForNullPerson(Person person) {
-        if (person == null) {
-            throw new NullParameterException("Given person was null.");
-        }
-    }
 }
