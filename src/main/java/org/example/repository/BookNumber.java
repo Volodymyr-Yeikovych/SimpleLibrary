@@ -1,6 +1,7 @@
-package org.example.model;
+package org.example.repository;
 
 import org.example.exceptions.NoBooksToRemoveException;
+import org.example.model.Book;
 
 import java.util.Objects;
 

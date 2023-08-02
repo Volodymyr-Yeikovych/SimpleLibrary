@@ -2,7 +2,6 @@ package org.example.repository;
 
 
 import org.example.model.Book;
-import org.example.model.BookNumber;
 import org.example.model.Person;
 
 import java.util.*;
@@ -19,7 +18,7 @@ public class BookRepository {
 
         var bookAndNumber = bookMap.get(title);
 
-        if (bookAndNumber.getAvailableBooks() == 0) {
+        if (bookAndNumber == null || bookAndNumber.getAvailableBooks() == 0) {
             return Optional.empty();
         }
 
