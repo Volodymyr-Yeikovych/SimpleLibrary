@@ -1,6 +1,7 @@
 package org.example.service;
 
-import org.example.exceptions.BookIsNotFoundException;
+import org.example.exceptions.BookNotFoundException;
+import org.example.exceptions.InvalidBookException;
 import org.example.repository.BookRepository;
 import org.example.model.Book;
 import org.example.model.Person;
@@ -20,11 +21,11 @@ public class Library {
         Optional<Book> bookToTake = bookRepository.takeBook(title);
 
         if (bookToTake.isEmpty()) {
-            throw new BookIsNotFoundException("Book {" + title + "} is not available.");
+            throw new BookNotFoundException("Book {" + title + "} is not available.");
         }
 
         Book book = bookToTake.get();
-        bookValidator.checkForAgeLimit(book, person);
+        bookValidator.validateTake(book, person);
 
         return book;
     }
@@ -32,7 +33,10 @@ public class Library {
     public void returnBook(Person returnee, Book book) {
         assert book != null : "Given book was null.";
 
-        bookValidator.checkForBookExistence(bookRepository.hasBook(book), book);
+        if (!bookRepository.hasBook(book)) {
+            throw new InvalidBookException("Book{" + book.getTitle() + "} doesn't exist in a library. Unable to return.");
+        }
+
 //        validation.checkForCorrectReturnPerson(dao.getReturnee(book), returnee);
 
         bookRepository.returnBook(book);

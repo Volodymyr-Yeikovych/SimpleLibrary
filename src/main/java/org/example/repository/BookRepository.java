@@ -33,6 +33,8 @@ public class BookRepository {
     }
 
     public Person getReturnee(Book book) {
+        var bookAndNumber = bookMap.get(book.getTitle());
+
         return null;
     }
 
