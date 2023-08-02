@@ -7,11 +7,6 @@ import org.example.exceptions.*;
 import java.util.Optional;
 
 public class BookValidator {
-    public void checkForAvailability(Optional<Book> book, String title) {
-        if (book.isEmpty()) {
-            throw new BookIsNotFoundException("Book {" + title + "} is not available.");
-        }
-    }
 
     public void checkForAgeLimit(Book book, Person person) {
         if (person.getAge() < book.getAgeLimit()) {
@@ -31,10 +26,5 @@ public class BookValidator {
         }
     }
 
-    public void checkForNullBook(Book book) {
-        if (book == null) {
-            throw new NullParameterException("Given book was null.");
-        }
-    }
 
 }

@@ -25,7 +25,7 @@ public class Main {
         Person youngVasa = new Person("Vasa", 17, true);
 //        Book youngVasaChoice = lib.takeBook(youngVasa, "10 Reasons for Feminism"); // young person learning feminism test +
 
-//        Book newBook = lib.takeBook(null, "7 Good Questions"); // Null person take test +
+        Book newBook = lib.takeBook(null, "7 Good Questions"); // Null person take test +
 //        lib.returnBook(null, takenBook); // null person return test -
 //        lib.returnBook(vasa, null); // null book return test +
     }
