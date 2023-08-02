@@ -1,5 +1,7 @@
 package org.example.service;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.example.exceptions.*;
 import org.example.repository.BookRepository;
@@ -13,7 +15,7 @@ public class Library {
 
     private final BookRepository bookRepository;
     private final BookValidator bookValidator;
-    private final Map<Person, Set<Book>> lendLease = new HashMap<>();
+    private final Multimap<Person, Book> lendLease = HashMultimap.create();
 
     public Library(BookRepository bookRepository, BookValidator bookValidator) {
         this.bookRepository = bookRepository;
@@ -32,15 +34,14 @@ public class Library {
         Book book = bookToTake.get();
         try {
             bookValidator.validateTake(book, person);
-            if (lendLease.containsKey(person)) {
-                if (lendLease.get(person).contains(book)) {
-                    throw new PersonAlreadyLeasingBookException("Person{" + person.getName()
-                            + "} already owes library a book{" + book.getTitle() + "}.");
-                }
-                lendLease.get(person).add(book);
-            } else {
-                lendLease.put(person, Sets.newHashSet(book));
+
+            if (lendLease.containsEntry(person, book)) {
+                throw new PersonAlreadyLeasingBookException("Person{" + person.getName()
+                        + "} already owes library a book{" + book.getTitle() + "}.");
             }
+
+            lendLease.put(person, book);
+
             return book;
         } catch (InvalidPersonAgeException ex) {
             bookRepository.returnBook(book);
@@ -61,7 +62,7 @@ public class Library {
         }
 
         bookValidator.validateReturn();
-        lendLease.get(returnee).remove(book);
+        lendLease.remove(returnee, book);
 
         bookRepository.returnBook(book);
     }
