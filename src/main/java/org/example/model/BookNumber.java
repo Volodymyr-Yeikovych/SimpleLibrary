@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class BookNumber {
 
-    private Book book;
+    private final Book book;
     private int availableBooks;
 
     public BookNumber(Book book, int availableBooks) {
@@ -18,16 +18,8 @@ public class BookNumber {
         return book;
     }
 
-    public void setBook(Book book) {
-        this.book = book;
-    }
-
     public int getAvailableBooks() {
         return availableBooks;
-    }
-
-    public void setAvailableBooks(int availableBooks) {
-        this.availableBooks = availableBooks;
     }
 
     public void removeBook() {
