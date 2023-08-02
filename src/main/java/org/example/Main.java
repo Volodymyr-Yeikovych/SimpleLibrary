@@ -4,11 +4,11 @@ import org.example.repository.BookRepositoryImpl;
 import org.example.service.Library;
 import org.example.model.Book;
 import org.example.model.Person;
-import org.example.validation.BookValidator;
+import org.example.validation.BookValidatorImpl;
 
 public class Main {
     public static void main(String[] args) {
-        Library lib = new Library(new BookRepositoryImpl(), new BookValidator());
+        Library lib = new Library(new BookRepositoryImpl(), new BookValidatorImpl());
         Person vasa = new Person("Vasa", 35, true);
         Person alex = new Person("Alex", 45, true);
 

@@ -2,6 +2,7 @@ package org.example.service;
 
 import org.example.exceptions.BookNotFoundException;
 import org.example.exceptions.InvalidBookException;
+import org.example.exceptions.InvalidReturnPersonException;
 import org.example.repository.BookRepository;
 import org.example.model.Book;
 import org.example.model.Person;
@@ -42,7 +43,12 @@ public class Library {
             throw new InvalidBookException("Book{" + book.getTitle() + "} doesn't exist in a library. Unable to return.");
         }
 
-//        validation.checkForCorrectReturnPerson(dao.getReturnee(book), returnee);
+//        Person expectedReturnee = bookRepository.getReturnee(book);
+//        if (!returnee.equals(expectedReturnee)) {
+//            throw new InvalidReturnPersonException("Expected returnee{" + expectedReturnee + "}, Given{" + returnee + "}");
+//        }
+
+        bookValidator.validateReturn();
 
         bookRepository.returnBook(book);
     }
