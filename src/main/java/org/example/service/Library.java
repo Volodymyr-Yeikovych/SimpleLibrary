@@ -10,7 +10,7 @@ import java.util.*;
 
 public class Library {
 
-    private final BookRepository dao = new BookRepository();
+    private final BookRepository bookRepository = new BookRepository();
 
     private final BookValidator bookValidator = new BookValidator();
 
@@ -18,11 +18,12 @@ public class Library {
     public Book takeBook(Person person, String title) {
         assert person != null : "Person is null.";
 
-        Optional<Book> bookToTake = dao.takeBook(title);
+        Optional<Book> bookToTake = bookRepository.takeBook(title);
 
         if (bookToTake.isEmpty()) {
             throw new BookIsNotFoundException("Book {" + title + "} is not available.");
         }
+
         Book book = bookToTake.get();
         bookValidator.checkForAgeLimit(book, person);
 
@@ -32,10 +33,10 @@ public class Library {
     public void returnBook(Person returnee, Book book) {
         assert book != null : "Given book was null.";
 
-        bookValidator.checkForBookExistence(dao.hasBook(book), book);
+        bookValidator.checkForBookExistence(bookRepository.hasBook(book), book);
 //        validation.checkForCorrectReturnPerson(dao.getReturnee(book), returnee);
 
-        dao.returnBook(book);
+        bookRepository.returnBook(book);
     }
 
 }
