@@ -45,6 +45,15 @@ public class BookRepositoryImpl implements BookRepository{
         return bookMap.containsKey(book.getTitle());
     }
 
+    @Override
+    public void donateBook(Book book) {
+        if (bookMap.containsKey(book.getTitle())) {
+            bookMap.get(book.getTitle()).addBook();
+        } else {
+            bookMap.put(book.getTitle(), new BookNumber(book, 1));
+        }
+    }
+
     private void generateBooks() {
         bookMap.put("7 Good Questions", new BookNumber(new Book("7 Good Questions", new Person("Alex Fooks", 45, true), 6), 2));
         bookMap.put("Im Just Ken", new BookNumber(new Book("Im Just Ken", new Person("Ryan Reynolds", 40, true), 12), 1));

@@ -53,4 +53,7 @@ public class Library {
         bookRepository.returnBook(book);
     }
 
+    public void donateBook(Book book) {
+        bookRepository.donateBook(book);
+    }
 }
