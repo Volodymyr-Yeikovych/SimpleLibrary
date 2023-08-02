@@ -34,12 +34,6 @@ public class BookRepositoryImpl implements BookRepository{
         bookAndNumber.addBook();
     }
 
-    public Person getReturnee(Book book) {
-        var bookAndNumber = bookMap.get(book.getTitle());
-
-        return null;
-    }
-
     @Override
     public boolean hasBook(Book book) {
         return bookMap.containsKey(book.getTitle());
