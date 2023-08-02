@@ -14,7 +14,6 @@ public class Library {
 
     private final BookValidator bookValidator = new BookValidator();
 
-
     public Book takeBook(Person person, String title) {
         assert person != null : "Person is null.";
 
