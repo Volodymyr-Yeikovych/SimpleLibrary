@@ -11,9 +11,14 @@ import java.util.*;
 
 public class Library {
 
-    private final BookRepository bookRepository = new BookRepository();
+    private final BookRepository bookRepository;
 
-    private final BookValidator bookValidator = new BookValidator();
+    private final BookValidator bookValidator;
+
+    public Library(BookRepository bookRepository, BookValidator bookValidator) {
+        this.bookRepository = bookRepository;
+        this.bookValidator= bookValidator;
+    }
 
     public Book takeBook(Person person, String title) {
         assert person != null : "Person is null.";

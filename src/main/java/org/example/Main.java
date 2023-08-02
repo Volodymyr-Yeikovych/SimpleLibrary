@@ -1,12 +1,14 @@
 package org.example;
 
+import org.example.repository.BookRepositoryImpl;
 import org.example.service.Library;
 import org.example.model.Book;
 import org.example.model.Person;
+import org.example.validation.BookValidator;
 
 public class Main {
     public static void main(String[] args) {
-        Library lib = new Library();
+        Library lib = new Library(new BookRepositoryImpl(), new BookValidator());
         Person vasa = new Person("Vasa", 35, true);
         Person alex = new Person("Alex", 45, true);
 
