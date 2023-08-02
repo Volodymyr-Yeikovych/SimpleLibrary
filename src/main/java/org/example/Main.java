@@ -14,7 +14,7 @@ public class Main {
 
         System.out.println("Attempted to take.");
         Book takenBook = lib.takeBook(vasa, "7 Good Questions"); // book taken test +
-
+//        Book takenBook2 = lib.takeBook(vasa, "7 Good Questions"); // cannot take the same book twice test +
 //        lib.returnBook(alex, takenBook); // wrong person cannot return test +
         lib.returnBook(vasa, takenBook); // book return test +
         System.out.println("Attempted to return.");

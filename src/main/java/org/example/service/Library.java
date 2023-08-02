@@ -1,10 +1,7 @@
 package org.example.service;
 
-import com.google.common.collect.Lists;
-import org.example.exceptions.BookNotFoundException;
-import org.example.exceptions.InvalidBookException;
-import org.example.exceptions.InvalidPersonAgeException;
-import org.example.exceptions.InvalidReturnPersonException;
+import com.google.common.collect.Sets;
+import org.example.exceptions.*;
 import org.example.repository.BookRepository;
 import org.example.model.Book;
 import org.example.model.Person;
@@ -16,7 +13,7 @@ public class Library {
 
     private final BookRepository bookRepository;
     private final BookValidator bookValidator;
-    private final Map<String, List<Person>> lendLease = new HashMap<>();
+    private final Map<Person, Set<Book>> lendLease = new HashMap<>();
 
     public Library(BookRepository bookRepository, BookValidator bookValidator) {
         this.bookRepository = bookRepository;
@@ -35,10 +32,14 @@ public class Library {
         Book book = bookToTake.get();
         try {
             bookValidator.validateTake(book, person);
-            if (lendLease.containsKey(book.getTitle())) {
-                lendLease.get(book.getTitle()).add(person);
+            if (lendLease.containsKey(person)) {
+                if (lendLease.get(person).contains(book)) {
+                    throw new PersonAlreadyLeasingBookException("Person{" + person.getName()
+                            + "} already owes library a book{" + book.getTitle() + "}.");
+                }
+                lendLease.get(person).add(book);
             } else {
-                lendLease.put(book.getTitle(), Lists.newArrayList(person));
+                lendLease.put(person, Sets.newHashSet(book));
             }
             return book;
         } catch (InvalidPersonAgeException ex) {
@@ -55,13 +56,12 @@ public class Library {
             throw new InvalidBookException("Book{" + book.getTitle() + "} doesn't exist in a library. Unable to return.");
         }
 
-
-        if (!lendLease.get(book.getTitle()).contains(returnee)) {
+        if (!lendLease.containsKey(returnee) || !lendLease.get(returnee).contains(book)) {
             throw new InvalidReturnPersonException("Returnee{" + returnee.getName() + "} was not found in lease list.");
         }
 
         bookValidator.validateReturn();
-        lendLease.get(book.getTitle()).remove(returnee);
+        lendLease.get(returnee).remove(book);
 
         bookRepository.returnBook(book);
     }
