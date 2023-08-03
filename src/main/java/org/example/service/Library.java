@@ -45,7 +45,7 @@ public class Library {
             return book;
         } catch (Throwable ex) {
             bookRepository.returnBook(book);
-            throw new InvalidPersonAgeException(ex.getMessage());
+            throw ex;
         }
     }
 
