@@ -1,6 +1,10 @@
-package service;
+package org.example.service;
 
-import org.example.exceptions.*;
+import org.example.exceptions.BookNotFoundException;
+import org.example.exceptions.InvalidBookException;
+import org.example.exceptions.InvalidPersonAgeException;
+import org.example.exceptions.InvalidReturnPersonException;
+import org.example.exceptions.PersonAlreadyLeasingBookException;
 import org.example.model.Book;
 import org.example.model.Person;
 import org.example.repository.BookRepository;
@@ -13,8 +17,14 @@ import org.junit.Test;
 
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class LibraryTest {
 
@@ -149,7 +159,7 @@ public class LibraryTest {
     }
 
     @Test
-    public void shouldRemovePersonFromLeaseWhenPersonReturnsBook(){
+    public void shouldRemovePersonFromLeaseWhenPersonReturnsBook() {
         Book book = mock(Book.class);
         Person person = mock(Person.class);
         library.donateBook(book);
@@ -197,29 +207,38 @@ public class LibraryTest {
     @Test
     public void shouldRemovePersonFromLeaseWhenPersonReturnsAllBooks() {
         Book book1 = mock(Book.class);
+        String bookTitle1 = "Some Title";
+        when(book1.getTitle()).thenReturn(bookTitle1);
+
         Book book2 = mock(Book.class);
-        Person person = mock(Person.class);
+        String bookTitle2 = "Other Title";
+        when(book2.getTitle()).thenReturn(bookTitle2);
+
         library.donateBook(book1);
         library.donateBook(book2);
-        when(book1.getTitle()).thenReturn("Some Title");
-        when(book2.getTitle()).thenReturn("Other Title");
+
         when(bookRepository.bookExists(book1)).thenReturn(true);
-        when(bookRepository.takeBook(book1.getTitle())).thenReturn(Optional.of(book1));
         when(bookRepository.bookExists(book2)).thenReturn(true);
-        when(bookRepository.takeBook(book2.getTitle())).thenReturn(Optional.of(book2));
+
+        when(bookRepository.takeBook(bookTitle1)).thenReturn(Optional.of(book1));
+        when(bookRepository.takeBook(bookTitle2)).thenReturn(Optional.of(book2));
+
+        Person person = mock(Person.class);
 
         library.takeBook(person, book1.getTitle());
         library.takeBook(person, book2.getTitle());
         boolean afterLeasing = library.hasLeaser(person);
+
         library.returnBook(person, book1);
         library.returnBook(person, book2);
-        boolean actual = library.hasLeaser(person);
+        boolean afterReturning = library.hasLeaser(person);
+
+        assertThat(afterLeasing).isTrue();
+        assertThat(afterReturning).isFalse();
 
         verify(bookValidator, times(2)).validateReturn();
         verify(bookRepository).returnBook(book1);
         verify(bookRepository).returnBook(book2);
-        assertThat(afterLeasing).isTrue();
-        assertThat(actual).isFalse();
     }
 }
 

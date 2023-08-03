@@ -2,13 +2,16 @@ package org.example.service;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import org.example.exceptions.*;
-import org.example.repository.BookRepository;
+import org.example.exceptions.BookNotFoundException;
+import org.example.exceptions.InvalidBookException;
+import org.example.exceptions.InvalidReturnPersonException;
+import org.example.exceptions.PersonAlreadyLeasingBookException;
 import org.example.model.Book;
 import org.example.model.Person;
+import org.example.repository.BookRepository;
 import org.example.validation.BookValidator;
 
-import java.util.*;
+import java.util.Optional;
 
 public class Library {
 
@@ -72,5 +75,9 @@ public class Library {
 
     public boolean hasLeaser(Person person) {
         return lendLease.containsKey(person);
+    }
+
+    boolean testMe() {
+        return Math.random() / 2 == 0;
     }
 }
