@@ -51,7 +51,7 @@ public class Library {
 
     public void returnBook(Person returnee, Book book) {
         assert book != null : "Given book was null.";
-        assert returnee != null : "Returnee is null.";
+        assert returnee != null : "Returnee was null.";
 
         if (!bookRepository.hasBook(book)) {
             throw new InvalidBookException("Book{" + book.getTitle() + "} doesn't exist in a library. Unable to return.");
@@ -69,5 +69,9 @@ public class Library {
 
     public void donateBook(Book book) {
         bookRepository.donateBook(book);
+    }
+
+    public boolean hasLeaser(Person person) {
+        return lendLease.containsKey(person);
     }
 }
