@@ -43,7 +43,7 @@ public class Library {
             lendLease.put(person, book);
 
             return book;
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             bookRepository.returnBook(book);
             throw new InvalidPersonAgeException(ex.getMessage());
         }
