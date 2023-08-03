@@ -43,9 +43,9 @@ public class Library {
             lendLease.put(person, book);
 
             return book;
-        } catch (InvalidPersonAgeException ex) {
+        } catch (Exception ex) {
             bookRepository.returnBook(book);
-            throw ex;
+            throw new InvalidPersonAgeException(ex.getMessage());
         }
     }
 
