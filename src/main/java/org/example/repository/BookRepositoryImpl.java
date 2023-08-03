@@ -1,12 +1,13 @@
 package org.example.repository;
 
 
+import org.example.exceptions.InvalidPersonAgeException;
 import org.example.model.Book;
 import org.example.model.Person;
 
 import java.util.*;
 
-public class BookRepositoryImpl implements BookRepository{
+public class BookRepositoryImpl implements BookRepository {
 
     private final Map<String, BookNumber> bookMap = new HashMap<>();
 
@@ -29,19 +30,25 @@ public class BookRepositoryImpl implements BookRepository{
 
     @Override
     public void returnBook(Book book) {
+        assert book != null : "Given book is null.";
+
+        if (!bookExists(book)) {
+            throw new InvalidPersonAgeException("Book{" + book.getTitle() + "} never existed in library.");
+        }
+
         var bookAndNumber = bookMap.get(book.getTitle());
 
         bookAndNumber.addBook();
     }
 
     @Override
-    public boolean hasBook(Book book) {
+    public boolean bookExists(Book book) {
         return bookMap.containsKey(book.getTitle());
     }
 
     @Override
     public void donateBook(Book book) {
-        if (bookMap.containsKey(book.getTitle())) {
+        if (bookExists(book)) {
             bookMap.get(book.getTitle()).addBook();
         } else {
             bookMap.put(book.getTitle(), new BookNumber(book, 1));

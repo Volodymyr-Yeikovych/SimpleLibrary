@@ -2,7 +2,6 @@ package org.example.service;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import org.example.exceptions.*;
 import org.example.repository.BookRepository;
 import org.example.model.Book;
@@ -53,7 +52,7 @@ public class Library {
         assert book != null : "Given book was null.";
         assert returnee != null : "Returnee was null.";
 
-        if (!bookRepository.hasBook(book)) {
+        if (!bookRepository.bookExists(book)) {
             throw new InvalidBookException("Book{" + book.getTitle() + "} doesn't exist in a library. Unable to return.");
         }
 

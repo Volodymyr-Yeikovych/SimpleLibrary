@@ -24,8 +24,8 @@ public class LibraryTest {
 
     @Test
     public void shouldTakeBookFromLibrary() {
-        Person person = new Person("Whatever1", 29, true);
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
+        Person person = mock(Person.class);
+        Book book = mock(Book.class);
         String title = "Some Title";
         when(bookRepository.takeBook(title)).thenReturn(Optional.of(book));
 
@@ -36,8 +36,8 @@ public class LibraryTest {
 
     @Test
     public void shouldThrowInvalidPersonAgeExceptionIfPersonIsTooYoungForTheBook() {
-        Person person = new Person("Whatever1", 29, true);
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
+        Person person = mock(Person.class);
+        Book book = mock(Book.class);
         String title = "Some Title";
         when(bookRepository.takeBook(title)).thenReturn(Optional.of(book));
         doThrow(InvalidPersonAgeException.class).when(bookValidator).validateTake(book, person);
@@ -47,7 +47,7 @@ public class LibraryTest {
 
     @Test
     public void shouldThrowBookNotFoundExceptionIfBookWasNotFoundInLibrary() {
-        Person person = new Person("Whatever1", 29, true);
+        Person person = mock(Person.class);
         String title = "Some Title";
         when(bookRepository.takeBook(title)).thenReturn(Optional.empty());
 
@@ -65,9 +65,9 @@ public class LibraryTest {
 
     @Test
     public void shouldThrowPersonAlreadyLeasingBookExceptionWhenTakingSecondBookWithoutReturningFirst() {
-        Person person = new Person("Whatever1", 29, true);
+        Person person = mock(Person.class);
         String title = "Some Title";
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
+        Book book = mock(Book.class);
         when(bookRepository.takeBook(title)).thenReturn(Optional.of(book));
 
         Book firstTakenBook = library.takeBook(person, title);
@@ -79,9 +79,9 @@ public class LibraryTest {
 
     @Test
     public void shouldCallReturnBookOfBookRepositoryWhenPersonAgeIsNotSufficientToLeaseBook() {
-        Person person = new Person("Whatever1", 12, true);
+        Person person = mock(Person.class);
         String title = "Some Title";
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
+        Book book = mock(Book.class);
         when(bookRepository.takeBook(title)).thenReturn(Optional.of(book));
         doThrow(InvalidPersonAgeException.class).when(bookValidator).validateTake(book, person);
 
@@ -90,8 +90,18 @@ public class LibraryTest {
     }
 
     @Test
+    public void shouldThrowAssertionErrorWhenReturneeIsNull() {
+        Person returnee = null;
+        Book book = mock(Book.class);
+
+        AssertionError ex = Assert.assertThrows(AssertionError.class, () -> library.returnBook(returnee, book));
+
+        assertThat(ex).hasMessage("Returnee was null.");
+    }
+
+    @Test
     public void shouldThrowAssertionErrorWhenReturnBookIsNull() {
-        Person returnee = new Person("Whatever1", 29, true);
+        Person returnee = mock(Person.class);
         Book book = null;
 
         AssertionError ex = Assert.assertThrows(AssertionError.class, () -> library.returnBook(returnee, book));
@@ -100,20 +110,10 @@ public class LibraryTest {
     }
 
     @Test
-    public void shouldThrowAssertionErrorWhenReturneeIsNull() {
-        Person returnee = null;
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
-
-        AssertionError ex = Assert.assertThrows(AssertionError.class, () -> library.returnBook(returnee, book));
-
-        assertThat(ex).hasMessage("Returnee was null.");
-    }
-
-    @Test
     public void shouldThrowInvalidBookExceptionWhenNonExistingBookIsReturned() {
-        Person returnee = new Person("Whatever1", 29, true);
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
-        when(bookRepository.hasBook(book)).thenReturn(false);
+        Person returnee = mock(Person.class);
+        Book book = mock(Book.class);
+        when(bookRepository.bookExists(book)).thenReturn(false);
 
         InvalidBookException ex = Assert.assertThrows(InvalidBookException.class, () -> library.returnBook(returnee, book));
 
@@ -122,10 +122,10 @@ public class LibraryTest {
 
     @Test
     public void shouldThrowInvalidReturnPersonExceptionWhenWrongPersonReturnsBook() {
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
-        Person person = new Person("Whatever1", 29, true);
+        Person person = mock(Person.class);
+        Book book = mock(Book.class);
         library.donateBook(book);
-        when(bookRepository.hasBook(book)).thenReturn(true);
+        when(bookRepository.bookExists(book)).thenReturn(true);
 
         InvalidReturnPersonException ex = Assert.assertThrows(InvalidReturnPersonException.class, () -> library.returnBook(person, book));
 
@@ -134,12 +134,12 @@ public class LibraryTest {
 
     @Test
     public void shouldThrowInvalidReturnPersonExceptionWhenValidPersonReturnsWrongBook() {
-        Book validBook = new Book("Some Title", new Person("Whatever", 29, true), 18);
-        Book invalidBook = new Book("Whatever Title", new Person("Some", 99, true), 2);
-        Person person = new Person("Whatever1", 29, true);
+        Book validBook = mock(Book.class);
+        Book invalidBook = mock(Book.class);
+        Person person = mock(Person.class);
         library.donateBook(validBook);
         library.donateBook(invalidBook);
-        when(bookRepository.hasBook(invalidBook)).thenReturn(true);
+        when(bookRepository.bookExists(invalidBook)).thenReturn(true);
         when(bookRepository.takeBook(validBook.getTitle())).thenReturn(Optional.of(validBook));
 
         library.takeBook(person, validBook.getTitle());
@@ -150,10 +150,10 @@ public class LibraryTest {
 
     @Test
     public void shouldRemovePersonFromLeaseWhenPersonReturnsBook(){
-        Book book = new Book("Some Title", new Person("Whatever", 29, true), 18);
-        Person person = new Person("Whatever1", 29, true);
+        Book book = mock(Book.class);
+        Person person = mock(Person.class);
         library.donateBook(book);
-        when(bookRepository.hasBook(book)).thenReturn(true);
+        when(bookRepository.bookExists(book)).thenReturn(true);
         when(bookRepository.takeBook(book.getTitle())).thenReturn(Optional.of(book));
 
         library.takeBook(person, book.getTitle());
@@ -169,14 +169,16 @@ public class LibraryTest {
 
     @Test
     public void shouldNotRemovePersonFromLeaseWhenPersonHaveNotReturnedAllBooks() {
-        Book book1 = new Book("Some Title1", new Person("Whatever", 29, true), 18);
-        Book book2 = new Book("Some Title2", new Person("Whatever", 29, true), 18);
-        Person person = new Person("Whatever1", 29, true);
+        Book book1 = mock(Book.class);
+        Book book2 = mock(Book.class);
+        Person person = mock(Person.class);
         library.donateBook(book1);
         library.donateBook(book2);
-        when(bookRepository.hasBook(book1)).thenReturn(true);
+        when(book1.getTitle()).thenReturn("Some Title");
+        when(book2.getTitle()).thenReturn("Other Title");
+        when(bookRepository.bookExists(book1)).thenReturn(true);
         when(bookRepository.takeBook(book1.getTitle())).thenReturn(Optional.of(book1));
-        when(bookRepository.hasBook(book2)).thenReturn(true);
+        when(bookRepository.bookExists(book2)).thenReturn(true);
         when(bookRepository.takeBook(book2.getTitle())).thenReturn(Optional.of(book2));
 
         library.takeBook(person, book1.getTitle());
@@ -194,14 +196,16 @@ public class LibraryTest {
 
     @Test
     public void shouldRemovePersonFromLeaseWhenPersonReturnsAllBooks() {
-        Book book1 = new Book("Some Title1", new Person("Whatever", 29, true), 18);
-        Book book2 = new Book("Some Title2", new Person("Whatever", 29, true), 18);
-        Person person = new Person("Whatever1", 29, true);
+        Book book1 = mock(Book.class);
+        Book book2 = mock(Book.class);
+        Person person = mock(Person.class);
         library.donateBook(book1);
         library.donateBook(book2);
-        when(bookRepository.hasBook(book1)).thenReturn(true);
+        when(book1.getTitle()).thenReturn("Some Title");
+        when(book2.getTitle()).thenReturn("Other Title");
+        when(bookRepository.bookExists(book1)).thenReturn(true);
         when(bookRepository.takeBook(book1.getTitle())).thenReturn(Optional.of(book1));
-        when(bookRepository.hasBook(book2)).thenReturn(true);
+        when(bookRepository.bookExists(book2)).thenReturn(true);
         when(bookRepository.takeBook(book2.getTitle())).thenReturn(Optional.of(book2));
 
         library.takeBook(person, book1.getTitle());
