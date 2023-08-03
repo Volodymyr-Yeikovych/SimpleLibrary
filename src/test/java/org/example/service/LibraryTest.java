@@ -180,28 +180,37 @@ public class LibraryTest {
     @Test
     public void shouldNotRemovePersonFromLeaseWhenPersonHaveNotReturnedAllBooks() {
         Book book1 = mock(Book.class);
+        String book1Title = "Some Title";
+        when(book1.getTitle()).thenReturn(book1Title);
+
         Book book2 = mock(Book.class);
-        Person person = mock(Person.class);
+        String book2Title = "Other Title";
+        when(book2.getTitle()).thenReturn(book2Title);
+
         library.donateBook(book1);
         library.donateBook(book2);
-        when(book1.getTitle()).thenReturn("Some Title");
-        when(book2.getTitle()).thenReturn("Other Title");
+
         when(bookRepository.bookExists(book1)).thenReturn(true);
-        when(bookRepository.takeBook(book1.getTitle())).thenReturn(Optional.of(book1));
         when(bookRepository.bookExists(book2)).thenReturn(true);
+
+        when(bookRepository.takeBook(book1.getTitle())).thenReturn(Optional.of(book1));
         when(bookRepository.takeBook(book2.getTitle())).thenReturn(Optional.of(book2));
+
+        Person person = mock(Person.class);
 
         library.takeBook(person, book1.getTitle());
         library.takeBook(person, book2.getTitle());
         boolean afterLeasing = library.hasLeaser(person);
+
         library.returnBook(person, book1);
-        boolean actual = library.hasLeaser(person);
+        boolean afterReturningOne = library.hasLeaser(person);
+
+        assertThat(afterLeasing).isTrue();
+        assertThat(afterReturningOne).isTrue();
 
         verify(bookValidator).validateReturn();
         verify(bookRepository).returnBook(book1);
         verify(bookRepository, never()).returnBook(book2);
-        assertThat(afterLeasing).isTrue();
-        assertThat(actual).isTrue();
     }
 
     @Test
