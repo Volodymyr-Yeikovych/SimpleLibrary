@@ -13,19 +13,18 @@ import org.example.validation.BookValidator;
 import org.example.validation.BookValidatorImpl;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+import java.time.Instant;
 import java.util.Optional;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Math.class)
+
 public class LibraryTest {
 
     private BookRepository bookRepository = mock(BookRepositoryImpl.class);
@@ -252,11 +251,12 @@ public class LibraryTest {
 
     @Test
     public void shouldReturnTrueWhenRolledZero() {
-        PowerMockito.mockStatic(Math.class);
-        when(Math.random()).thenReturn(0.);
+        try (MockedStatic<Math> mockedStatic = Mockito.mockStatic(Math.class)) {
+            mockedStatic.when(Math::random).thenReturn(0.);
 
-        boolean isZero = library.testMe();
-        assertThat(isZero).isTrue();
+            boolean isZero = library.testMe();
+            assertThat(isZero).isTrue();
+        }
     }
 }
 

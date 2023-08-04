@@ -18,7 +18,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public Optional<Book> takeBook(String title) {
 
-        var bookAndNumber = bookMap.get(title);
+        BookNumber bookAndNumber = bookMap.get(title);
 
         if (bookAndNumber == null || bookAndNumber.getAvailableBooks() == 0) {
             return Optional.empty();
@@ -36,7 +36,7 @@ public class BookRepositoryImpl implements BookRepository {
             throw new InvalidPersonAgeException("Book{" + book.getTitle() + "} never existed in library.");
         }
 
-        var bookAndNumber = bookMap.get(book.getTitle());
+        BookNumber bookAndNumber = bookMap.get(book.getTitle());
 
         bookAndNumber.addBook();
     }
