@@ -9,23 +9,23 @@ import org.example.model.Book;
 import org.example.model.Person;
 import org.example.repository.BookRepository;
 import org.example.repository.BookRepositoryImpl;
-import org.example.service.Library;
 import org.example.validation.BookValidator;
 import org.example.validation.BookValidatorImpl;
 import org.junit.Assert;
 import org.junit.Test;
-
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Math.class)
 public class LibraryTest {
 
     private BookRepository bookRepository = mock(BookRepositoryImpl.class);
@@ -248,6 +248,15 @@ public class LibraryTest {
         verify(bookValidator, times(2)).validateReturn();
         verify(bookRepository).returnBook(book1);
         verify(bookRepository).returnBook(book2);
+    }
+
+    @Test
+    public void shouldReturnTrueWhenRolledZero() {
+        PowerMockito.mockStatic(Math.class);
+        when(Math.random()).thenReturn(0.);
+
+        boolean isZero = library.testMe();
+        assertThat(isZero).isTrue();
     }
 }
 
